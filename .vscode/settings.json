@@ -1,0 +1,13 @@
+{
+    "python.pythonPath": ".\\curso_fastapi_env\\Scripts\\python.exe",
+    "python.analysis.extraPaths": [
+        "./",
+        "./curso_fastapi_env/Lib/site-packages"
+    ],
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.indexing": true,
+    "python.languageServer": "Pylance",
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    }
+}
