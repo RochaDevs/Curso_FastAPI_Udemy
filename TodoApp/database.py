@@ -18,7 +18,7 @@ declarative_base → Cria uma classe base para os modelos (tabelas).
 sessionmaker → Cria um gerador de sessões de banco (sessões que você usará para fazer queries, inserts, updates, deletes etc).
 """
 
-SQLALCHEMY_DATABASE_URL = 'sqlite:///./todos.db'
+SQLALCHEMY_DATABASE_URL = 'sqlite:///./todosapp.db'
 """
 Explicação:
 
