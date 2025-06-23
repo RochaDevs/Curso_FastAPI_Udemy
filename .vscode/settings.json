@@ -8,6 +8,6 @@
     "python.analysis.indexing": true,
     "python.languageServer": "Pylance",
     "editor.codeActionsOnSave": {
-        "source.organizeImports": true
+        "source.organizeImports": "explicit"
     }
 }
