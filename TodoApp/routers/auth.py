@@ -46,7 +46,7 @@ class CreateUserRequest(BaseModel):
 
 # Define o formato de resposta da rota de login: token JWT + tipo ("bearer").
 class Token(BaseModel):
-    acess_token:str
+    access_token:str
     token_type: str
 
 def get_db():
@@ -129,12 +129,13 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         username: str = payload.get('sub')
         user_id: int = payload.get('id')
         if username is None or user_id is None:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user 1')
         
         return {'username': username, 'id': user_id}
     
-    except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user')
+    except JWTError as e:
+        print(f'Erro no JWT: {str(e)}')  # ou use logging
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user 2')
         
 
 
@@ -173,8 +174,8 @@ async def login_for_acess_token(
 ):
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user')
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user 3')
     
     token = create_acess_token(user.username, user.id, timedelta(minutes=20))
     
-    return {'acess_token': token, 'token_type': 'bearer'}
+    return {'access_token': token, 'token_type': 'bearer'}
