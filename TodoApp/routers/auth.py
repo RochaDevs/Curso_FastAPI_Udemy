@@ -43,6 +43,7 @@ class CreateUserRequest(BaseModel):
     last_name: str
     password: str
     role: str
+    phone_number = str
 
 # Define o formato de resposta da rota de login: token JWT + tipo ("bearer").
 class Token(BaseModel):
@@ -71,12 +72,13 @@ def authenticate_user(username: str, password: str, db):
     
     return user
 
-def create_acess_token(username: str, user_id: int, expires_delta: timedelta):
+def create_acess_token(username: str, user_id: int, role: str, expires_delta: timedelta):
     
     #Claims
     encode = {
         'sub': username, # recomendado
-        'id': user_id  # customizado
+        'id': user_id,  # customizado
+        'role': role #
     }
     
     """
@@ -128,22 +130,18 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get('sub')
         user_id: int = payload.get('id')
+        user_role: str = payload.get('role')
+        
         if username is None or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user 1')
         
-        return {'username': username, 'id': user_id}
+        return {'username': username, 'id': user_id, 'user_role': user_role}
     
     except JWTError as e:
         print(f'Erro no JWT: {str(e)}')  # ou use logging
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user 2')
+     
         
-
-
-
-
-
-
-
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(create_user_request: CreateUserRequest, db: db_dependency):
     create_user_model = Users(
@@ -153,7 +151,8 @@ async def create_user(create_user_request: CreateUserRequest, db: db_dependency)
         last_name=create_user_request.last_name,
         role=create_user_request.role,
         hashed_password=bcrypt_context.hash(create_user_request.password),
-        is_active=True
+        is_active=True,
+        phone_number=create_user_model.phone_number
     )
     
     db.add(create_user_model)
@@ -176,6 +175,6 @@ async def login_for_acess_token(
     if not user:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user 3')
     
-    token = create_acess_token(user.username, user.id, timedelta(minutes=20))
+    token = create_acess_token(user.username, user.id, user.role, timedelta(minutes=20))
     
     return {'access_token': token, 'token_type': 'bearer'}
