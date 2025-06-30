@@ -1,11 +1,12 @@
-import models
-from database import engine
 from fastapi import FastAPI
-from routers import admin, auth, todos, users
+
+from .database import engine
+from .models import Base
+from .routers import admin, auth, todos, users
 
 app = FastAPI()
 
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 """
 models.Base → Aqui você está acessando a variável Base que você criou no seu database.py com:
@@ -14,6 +15,10 @@ models.Base → Aqui você está acessando a variável Base que você criou no s
 
 bind=engine → Aqui você está dizendo "Use o banco de dados ao qual esse engine está conectado", que no seu caso é o todos.db (SQLite).
 """
+
+@app.get("/healthy")
+def health_check():
+    return {'status': 'Healthy'}
 
 app.include_router(auth.router)
 app.include_router(todos.router)
