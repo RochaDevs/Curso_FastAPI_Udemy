@@ -43,7 +43,7 @@ class CreateUserRequest(BaseModel):
     last_name: str
     password: str
     role: str
-    phone_number = str
+    phone_number: str
 
 # Define o formato de resposta da rota de login: token JWT + tipo ("bearer").
 class Token(BaseModel):
