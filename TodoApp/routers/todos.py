@@ -85,7 +85,7 @@ async def read_todo(user: user_dependency, db: db_dependency, todo_id: int = Pat
     
     if todo_model is not None:
         return todo_model
-    raise HTTPException(status_code=404, detail='Todo not found')
+    raise HTTPException(status_code=404, detail='Todo is not found')
 
 
 

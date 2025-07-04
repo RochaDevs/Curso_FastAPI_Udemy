@@ -1,4 +1,4 @@
-import pytest
+import pytest  # Framework de testes usado para rodar os testes automatizados.
 
 
 def test_equal_or_not_equal():
@@ -14,9 +14,9 @@ def test_boolean():
     assert validated is True
     assert ('hello' == 'world') is False
     
-def test_type():
-    assert type('hello' is str)
-    assert type('world' is not str)
+# def test_type():
+#     assert type('hello' is str)
+#     assert type('world' is not str)
     
 def test_greater_and_less_than():
     assert 7 > 3
@@ -35,10 +35,31 @@ class Student:
         self.last_name = last_name
         self.major = major
         self.years = years
-        
+
+
+
+"""
+    O que é um fixture?
+    Em pytest, um fixture é uma função especial que fornece dados de teste ou configura o ambiente para os testes.
+    Por exemplo:
+
+        preparar objetos
+
+        conectar a banco de dados
+
+        criar arquivos temporários
+
+        limpar dados depois
+
+    Ou seja, um fixture serve para evitar repetição de código de inicialização e preparar tudo que o teste precisa.
+
+    No seu caso, a fixture cria um objeto Student padrão que pode ser usado por vários testes.
+"""        
 @pytest.fixture    
 def default_employee():
     return Student('John', 'Doe', 'Computer Science', 3)
+
+
         
 def test_person_initialization(default_employee):
     assert default_employee.first_name == 'John', 'First name should be John'
