@@ -6,7 +6,8 @@ from sqlalchemy.pool import StaticPool
 
 from ..database import Base
 from ..main import app
-from ..models import Todos
+from ..models import Todos, Users
+from ..routers.auth import bcrypt_context
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./testdb.db"
 
@@ -48,4 +49,25 @@ def test_todo():
     yield todo
     with engine.connect() as connection:
         connection.execute(text('DELETE from todos;'))
+        connection.commit()
+        
+
+@pytest.fixture
+def test_user():
+    user = Users(
+        username='matheusrocha',
+        email='matheusrocha@gmail.com',
+        first_name='Matheus',
+        last_name='Rocha',
+        hashed_password=bcrypt_context.hash('teste1234'),
+        role='admin',
+        phone_number='(11) 95604-2056'
+    )
+    
+    db = TestingSessionLocal()
+    db.add(user)
+    db.commit()
+    yield user
+    with engine.connect() as connection:
+        connection.execute(text("DELETE FROM users;"))
         connection.commit()
